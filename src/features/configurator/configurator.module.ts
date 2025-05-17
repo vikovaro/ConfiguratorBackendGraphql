@@ -1,18 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfiguratorService } from './services/configurator.service';
-import { ConfiguratorController } from './controllers/configurator.controller';
 import { ConfiguratorRepository } from './repositories/configurator.repository';
 import { UserRepository } from '../user/repositories/user.repository';
 import { UserService } from '../user/services/user.service';
 import { TokenService } from '../user/services/token.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { ConfiguratorResolver } from './configurator.resolver';
+import { ConfiguratorResolver } from './resolvers/configurator.resolver';
 
 @Module({
-    controllers: [ConfiguratorController],
     providers: [
         TokenService,
         UserService,
@@ -28,7 +24,7 @@ import { ConfiguratorResolver } from './configurator.resolver';
             useFactory: async (configService: ConfigService) => ({
                 secret: configService.get<string>('JWT_SECRET'),
                 signOptions: {
-                    expiresIn: '30m',
+                    expiresIn: '1y',
                 },
                 global: true,
             }),

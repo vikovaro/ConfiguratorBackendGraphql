@@ -1,17 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfiguratorRepository } from '../repositories/configurator.repository';
-import { CreateConfigurationRequest } from '../domain/dto/create-configuration.request';
-import { IConfigurationResponse } from '../domain/dto/configuration.response';
-import { IGetConfigurationResponse } from '../domain/dto/get-configurations.response';
 import { ConfiguratorException } from '../../../errors/configurator-exception';
+import { ConfigurationEntity, ConfigurationsEntity } from '../domain/entities/configurator.entity';
+import { CreateConfigurationInput } from '../domain/dto/create-configuration.input';
 
 @Injectable()
 export class ConfiguratorService {
     constructor(private readonly configurationRepository: ConfiguratorRepository) {}
 
     async createConfiguration(
-        createConfigurationDto: CreateConfigurationRequest,
-    ): Promise<IConfigurationResponse> {
+        createConfigurationDto: CreateConfigurationInput,
+    ): Promise<ConfigurationEntity> {
         const userPrice = createConfigurationDto.price;
 
         const cpus = await this.configurationRepository.getAllCpus();
@@ -50,7 +49,7 @@ export class ConfiguratorService {
         const motherboardBudget = userPrice * 0.1; // 10% на материнскую плату
         const psuBudget = userPrice * 0.1; // 10% на блок питания
 
-        let bestConfiguration: IConfigurationResponse | null = null;
+        let bestConfiguration: ConfigurationEntity | null = null;
         let bestPriceDifference = Infinity;
 
         // Сортируем компоненты по цене (от дорогих к дешевым)
@@ -127,7 +126,7 @@ export class ConfiguratorService {
     }
 
     async getConfigurationById(id: number) {
-        let configuration: IConfigurationResponse;
+        let configuration: ConfigurationEntity;
         configuration = await this.configurationRepository.getConfigurationFromCache(id);
         if (!configuration) {
             configuration = await this.configurationRepository.getConfigurationFromDb(id);
@@ -140,13 +139,13 @@ export class ConfiguratorService {
         return configuration;
     }
 
-    async getAllConfigurations(limit: number, offset: number): Promise<IGetConfigurationResponse> {
+    async getAllConfigurations(limit: number, offset: number): Promise<ConfigurationsEntity> {
         return await this.configurationRepository.getAllConfiguration(limit, offset);
     }
 
     async createConfigurationOld1(
-        createConfigurationDto: CreateConfigurationRequest,
-    ): Promise<IConfigurationResponse> {
+        createConfigurationDto: CreateConfigurationInput,
+    ): Promise<ConfigurationEntity> {
         const userPrice = createConfigurationDto.price;
         const maxPrice = userPrice + 3000;
 
@@ -180,7 +179,7 @@ export class ConfiguratorService {
             );
         }
 
-        let bestConfiguration: IConfigurationResponse | null = null;
+        let bestConfiguration: ConfigurationEntity | null = null;
         let bestPriceDifference = Infinity;
 
         // Сортируем компоненты по цене (от дорогих к дешевым)

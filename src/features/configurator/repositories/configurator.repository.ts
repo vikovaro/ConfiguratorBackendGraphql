@@ -1,14 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { IConfigurationResponse } from '../domain/dto/configuration.response';
-import { ICpuResponse } from '../domain/dto/cpu.response';
-import { IGpuResponse } from '../domain/dto/gpu.response';
-import { IMotherBoardResponse } from '../domain/dto/motherboard.response';
-import { IPsuResponse } from '../domain/dto/psu.response';
-import { IRamResponse } from '../domain/dto/ram.response';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
-import { IGetConfigurationResponse } from '../domain/dto/get-configurations.response';
+import { ConfigurationEntity, ConfigurationsEntity } from '../domain/entities/configurator.entity';
+import { CpuEntity } from '../domain/entities/cpu.entity';
+import { GpuEntity } from '../domain/entities/gpu.entity';
+import { MotherBoardEntity } from '../domain/entities/motherboard.entity';
+import { PsuEntity } from '../domain/entities/psu.entity';
+import { RamEntity } from '../domain/entities/ram.entity';
 
 @Injectable()
 export class ConfiguratorRepository {
@@ -25,11 +24,11 @@ export class ConfiguratorRepository {
         ram: true,
     };
 
-    async getConfigurationFromCache(id: number): Promise<IConfigurationResponse> {
+    async getConfigurationFromCache(id: number): Promise<ConfigurationEntity> {
         return await this.cacheManager.get(`configuration-${id}`);
     }
 
-    async getConfigurationFromDb(id: number): Promise<IConfigurationResponse> {
+    async getConfigurationFromDb(id: number): Promise<ConfigurationEntity> {
         return this.prisma.configuration.findUnique({
             where: {
                 id: id,
@@ -41,8 +40,8 @@ export class ConfiguratorRepository {
     }
 
     async saveConfiguration(
-        configuration: IConfigurationResponse,
-    ): Promise<IConfigurationResponse> {
+        configuration: ConfigurationEntity,
+    ): Promise<ConfigurationEntity> {
         const newConfiguration = await this.prisma.configuration.create({
             data: {
                 cpuId: configuration.cpu.id,
@@ -66,7 +65,7 @@ export class ConfiguratorRepository {
         return newConfiguration;
     }
 
-    async getAllConfiguration(limit: number, offset: number): Promise<IGetConfigurationResponse> {
+    async getAllConfiguration(limit: number, offset: number): Promise<ConfigurationsEntity> {
         const configurations = await this.prisma.configuration.findMany({
             skip: offset,
             take: limit,
@@ -83,23 +82,23 @@ export class ConfiguratorRepository {
         };
     }
 
-    async getAllCpus(): Promise<ICpuResponse[]> {
+    async getAllCpus(): Promise<CpuEntity[]> {
         return this.prisma.cpu.findMany();
     }
 
-    async getAllGpus(): Promise<IGpuResponse[]> {
+    async getAllGpus(): Promise<GpuEntity[]> {
         return this.prisma.gpu.findMany();
     }
 
-    async getAllMotherBoards(): Promise<IMotherBoardResponse[]> {
+    async getAllMotherBoards(): Promise<MotherBoardEntity[]> {
         return this.prisma.motherboard.findMany();
     }
 
-    async getAllPsus(): Promise<IPsuResponse[]> {
+    async getAllPsus(): Promise<PsuEntity[]> {
         return this.prisma.psu.findMany();
     }
 
-    async getAllRam(): Promise<IRamResponse[]> {
+    async getAllRam(): Promise<RamEntity[]> {
         return this.prisma.ram.findMany();
     }
 }
