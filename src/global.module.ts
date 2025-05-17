@@ -15,6 +15,8 @@ import { UserRepository } from './features/user/repositories/user.repository';
 import { OrderModule } from './features/order/order.module';
 import { RolesGuard } from './guards/roles.guard';
 import { MetricsModule } from './metrics/metrics.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 @Global()
 @Module({
@@ -34,6 +36,11 @@ import { MetricsModule } from './metrics/metrics.module';
                 },
                 global: true,
             }),
+        }),
+        GraphQLModule.forRoot<ApolloDriverConfig>({
+            driver: ApolloDriver,
+            sortSchema: true,
+            autoSchemaFile: true,
         }),
         ConfiguratorModule,
         OrderModule,

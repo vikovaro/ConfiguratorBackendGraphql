@@ -7,6 +7,9 @@ import { UserService } from '../user/services/user.service';
 import { TokenService } from '../user/services/token.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ConfiguratorResolver } from './configurator.resolver';
 
 @Module({
     controllers: [ConfiguratorController],
@@ -16,6 +19,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         ConfiguratorService,
         UserRepository,
         ConfiguratorRepository,
+        ConfiguratorResolver,
     ],
     imports: [
         JwtModule.registerAsync({
