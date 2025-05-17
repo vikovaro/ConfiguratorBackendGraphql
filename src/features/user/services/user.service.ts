@@ -7,11 +7,11 @@ import {
 } from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository';
 import { TokenService } from './token.service';
-import { TokensResponse } from '../domain/dto/tokens.response';
-import { IUserResponse } from '../domain/dto/user.response';
-import { SignUpRequest } from '../domain/dto/sign-up.request';
+import { TokensResponse } from '../domain/entities/tokens.entity';
+import { IUserResponse } from '../domain/entities/user.entity';
+import { SignUpRequest } from '../domain/dto/sign-up.input';
 import { Role } from '@prisma/client';
-import { UpdateUserRequest } from '../domain/dto/update.request';
+import { UpdateUserRequest } from '../domain/dto/update-user.input';
 import * as bcrypt from 'bcryptjs';
 import { MetricsService } from '../../../metrics/metrics.service';
 

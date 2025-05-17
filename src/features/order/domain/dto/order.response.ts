@@ -1,48 +1,24 @@
-import {
-    ConfigurationResponse,
-    IConfigurationResponse,
-} from '../../../configurator/domain/dto/configuration.response';
-import { IUserResponse, UserResponse } from '../../../user/domain/dto/user.response';
+import { IUser, IUserResponse, UserResponse } from '../../../user/domain/entities/user.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { EStatus, TStatus } from '../models/status.enum';
+import { ConfigurationEntity } from '../../../configurator/domain/entities/configuration.entity';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
-export class OrderResponse implements IOrderResponse {
-    @ApiProperty({ example: 1 })
-    @Expose()
+@ObjectType()
+export class Order {
+    @Field(() => Int)
     id: number;
 
-    @ApiProperty({ example: 1 })
-    @Expose()
-    orderDate: Date;
 
-    @ApiProperty({ example: 1 })
-    @Expose()
-    deliveryDate?: Date;
-
-    @ApiProperty({ example: 'Revolution Square, Building 1' })
-    @Expose()
-    address: string;
-
-    @ApiProperty({ enum: EStatus })
-    @Expose()
-    status: EStatus;
-
-    @ApiPropertyOptional({ type: () => ConfigurationResponse })
-    @Expose()
-    configuration: ConfigurationResponse;
-
-    @ApiPropertyOptional({ type: () => UserResponse })
-    @Expose()
-    user: IUserResponse;
 }
 
-export interface IOrderResponse {
+export interface IOrder {
     id: number;
     orderDate: Date;
     deliveryDate?: Date;
     address: string;
     status: TStatus;
-    configuration: IConfigurationResponse;
-    user: IUserResponse;
+    configuration: ;
+    user: IUser;
 }

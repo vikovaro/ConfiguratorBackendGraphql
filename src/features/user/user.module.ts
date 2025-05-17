@@ -15,7 +15,7 @@ import { MetricsService } from '../../metrics/metrics.service';
             useFactory: async (configService: ConfigService) => ({
                 secret: configService.get<string>('JWT_SECRET'),
                 signOptions: {
-                    expiresIn: '30m',
+                    expiresIn: '30d',
                 },
                 global: true,
             }),

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ITokensResponse } from '../domain/dto/tokens.response';
+import { ITokensResponse } from '../domain/entities/tokens.entity';
 
 @Injectable()
 export class TokenService {
@@ -16,7 +16,7 @@ export class TokenService {
                     date: Date.now(),
                 },
                 {
-                    expiresIn: '5m',
+                    expiresIn: '30d',
                 },
             ),
             this.jwtService.signAsync(

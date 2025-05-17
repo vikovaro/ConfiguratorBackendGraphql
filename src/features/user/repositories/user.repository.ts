@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, Role } from '@prisma/client';
-import { IUserResponse } from '../domain/dto/user.response';
-import { ISession } from '../domain/models/session.model';
-import { UpdateUserRequest } from '../domain/dto/update.request';
-import { SignUpRequest } from '../domain/dto/sign-up.request';
+import { IUserResponse } from '../domain/entities/user.entity';
+import { ISession } from '../domain/entities/session.entity';
+import { UpdateUserRequest } from '../domain/dto/update-user.input';
+import { SignUpRequest } from '../domain/dto/sign-up.input';
 
 @Injectable()
 export class UserRepository {

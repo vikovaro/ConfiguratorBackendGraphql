@@ -2,9 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateOrderRequest } from '../domain/dto/create.order.request';
 import { OrderRepository } from '../repositories/order.repository';
 import { IOrderResponse } from '../domain/dto/order.response';
-import { UpdateOrderRequest } from '../domain/dto/update.order.request';
+import { UpdateOrderRequest } from '../domain/dto/update-order.input';
 import { UserRepository } from '../../user/repositories/user.repository';
-import { ERole } from '../../user/domain/models/role.enum';
+import { ERole } from '../../user/domain/enums/role.enum';
 import { MetricsService } from '../../../metrics/metrics.service';
 
 @Injectable()

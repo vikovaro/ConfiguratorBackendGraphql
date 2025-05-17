@@ -32,7 +32,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
             useFactory: async (configService: ConfigService) => ({
                 secret: configService.get<string>('JWT_SECRET'),
                 signOptions: {
-                    expiresIn: '1y',
+                    expiresIn: '30d',
                 },
                 global: true,
             }),

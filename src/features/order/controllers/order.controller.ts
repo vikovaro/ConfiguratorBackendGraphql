@@ -16,8 +16,8 @@ import { CreateOrderRequest } from '../domain/dto/create.order.request';
 import { AuthRestGuard } from '../../../guards/auth-rest.guard';
 import { OrderResponse } from '../domain/dto/order.response';
 import { Request } from 'express';
-import { UpdateOrderRequest } from '../domain/dto/update.order.request';
-import { ERole } from '../../user/domain/models/role.enum';
+import { UpdateOrderRequest } from '../domain/dto/update-order.input';
+import { ERole } from '../../user/domain/enums/role.enum';
 import { Roles } from '../../../decorators/roles.decorator';
 
 @Controller('order')

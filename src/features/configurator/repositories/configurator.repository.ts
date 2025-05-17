@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
-import { ConfigurationEntity, ConfigurationsEntity } from '../domain/entities/configurator.entity';
+import { ConfigurationEntity, ConfigurationsEntity } from '../domain/entities/configuration.entity';
 import { CpuEntity } from '../domain/entities/cpu.entity';
 import { GpuEntity } from '../domain/entities/gpu.entity';
 import { MotherBoardEntity } from '../domain/entities/motherboard.entity';
@@ -39,9 +39,7 @@ export class ConfiguratorRepository {
         });
     }
 
-    async saveConfiguration(
-        configuration: ConfigurationEntity,
-    ): Promise<ConfigurationEntity> {
+    async saveConfiguration(configuration: ConfigurationEntity): Promise<ConfigurationEntity> {
         const newConfiguration = await this.prisma.configuration.create({
             data: {
                 cpuId: configuration.cpu.id,

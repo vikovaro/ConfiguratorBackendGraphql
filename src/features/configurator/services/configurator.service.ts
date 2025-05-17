@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfiguratorRepository } from '../repositories/configurator.repository';
 import { ConfiguratorException } from '../../../errors/configurator-exception';
-import { ConfigurationEntity, ConfigurationsEntity } from '../domain/entities/configurator.entity';
+import { ConfigurationEntity, ConfigurationsEntity } from '../domain/entities/configuration.entity';
 import { CreateConfigurationInput } from '../domain/dto/create-configuration.input';
 
 @Injectable()

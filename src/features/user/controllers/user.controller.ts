@@ -10,14 +10,14 @@ import {
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { TokensResponse } from '../domain/dto/tokens.response';
+import { TokensResponse } from '../domain/entities/tokens.entity';
 import { UserService } from '../services/user.service';
 import { AuthRestGuard } from '../../../guards/auth-rest.guard';
 import { AuthRefreshRestGuard } from '../../../guards/auth-refresh.guad';
-import { UserResponse } from '../domain/dto/user.response';
-import { SignInRequest } from '../domain/dto/sign-in.request';
-import { SignUpRequest } from '../domain/dto/sign-up.request';
-import { UpdateUserRequest } from '../domain/dto/update.request';
+import { UserResponse } from '../domain/entities/user.entity';
+import { SignInRequest } from '../domain/dto/sign-in.input';
+import { SignUpRequest } from '../domain/dto/sign-up.input';
+import { UpdateUserRequest } from '../domain/dto/update-user.input';
 
 @Controller('user')
 @ApiTags('user')

@@ -4,7 +4,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
 import { CreateOrderRequest } from '../domain/dto/create.order.request';
 import { IOrderResponse } from '../domain/dto/order.response';
-import { UpdateOrderRequest } from '../domain/dto/update.order.request';
+import { UpdateOrderRequest } from '../domain/dto/update-order.input';
 
 @Injectable()
 export class OrderRepository {

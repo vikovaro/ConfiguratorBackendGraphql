@@ -28,11 +28,3 @@ export class ConfigurationEntity {
     @Field(() => Int)
     price: number;
 }
-
-@ObjectType()
-export class ConfigurationsEntity {
-    @Field(() => Int)
-    count: number;
-    @Field(() => [ConfigurationEntity])
-    configurations: ConfigurationEntity[];
-}
