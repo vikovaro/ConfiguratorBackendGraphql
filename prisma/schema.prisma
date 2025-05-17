@@ -1,0 +1,126 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["linux-arm64-openssl-1.1.x", "windows", "darwin-arm64", "debian-openssl-1.1.x", "debian-openssl-3.0.x", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model cpu {
+  id           Int             @id @default(autoincrement())
+  manufacturer String
+  socket       String
+  name         String
+  wattage      Int
+  frequency    Float
+  price        Int
+  computers    Configuration[]
+}
+
+model gpu {
+  id           Int             @id @default(autoincrement())
+  frequency    Float
+  manufacturer String
+  name         String
+  port         String
+  wattage      Int
+  price        Int
+  computers    Configuration[]
+}
+
+model motherboard {
+  id              Int             @id @default(autoincrement())
+  manufacturer    String
+  name            String
+  cpuManufacturer String
+  socket          String
+  chipset         String
+  port            String
+  price           Int
+  computers       Configuration[]
+}
+
+model psu {
+  id           Int             @id @default(autoincrement())
+  manufacturer String
+  name         String
+  wattage      Int
+  price        Int
+  computers    Configuration[]
+}
+
+model ram {
+  id           Int             @id @default(autoincrement())
+  manufacturer String
+  name         String
+  capacity     Int
+  price        Int
+  computers    Configuration[]
+}
+
+model Configuration {
+  id            Int         @id @default(autoincrement())
+  cpuId         Int
+  gpuId         Int
+  motherboardId Int
+  psuId         Int
+  ramId         Int
+  price         Int
+  createdAt     DateTime    @default(now())
+  cpu           cpu         @relation(fields: [cpuId], references: [id])
+  gpu           gpu         @relation(fields: [gpuId], references: [id])
+  motherboard   motherboard @relation(fields: [motherboardId], references: [id])
+  psu           psu         @relation(fields: [psuId], references: [id])
+  ram           ram         @relation(fields: [ramId], references: [id])
+  order         Order[]
+}
+
+model Order {
+  id              Int           @id @default(autoincrement())
+  orderDate       DateTime      @default(now())
+  deliveryDate    DateTime?
+  address         String
+  configuration   Configuration @relation(fields: [configurationId], references: [id])
+  configurationId Int
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String        @db.Uuid
+  status          Status
+}
+
+model User {
+  id        String    @id @unique @default(uuid()) @db.Uuid
+  username  String    @unique
+  password  String
+  name      String
+  phone     String
+  email     String
+  createdAt DateTime  @default(now())
+  role      Role
+  updatedAt DateTime  @updatedAt
+  sessions  Session[]
+  Order     Order[]
+}
+
+model Session {
+  id           String   @id @unique @default(uuid()) @db.Uuid
+  accessToken  String   @unique
+  refreshToken String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String   @unique @db.Uuid
+}
+
+enum Role {
+  Admin
+  User
+}
+
+enum Status {
+  Pending
+  Accepted
+  Canceled
+  Completed
+}
