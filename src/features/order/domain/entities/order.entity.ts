@@ -1,10 +1,10 @@
-import { EStatus, TStatus } from '../domain/entities/status.enum';
 import {
     Configuration,
     IConfiguration,
 } from '../../../configurator/domain/entities/configuration.entity';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { IUser, User } from 'src/features/user/domain/entities/user.entity';
+import { EStatus, TStatus } from '../enums/status.enum';
 
 @ObjectType()
 export class Order implements IOrder {

@@ -2,28 +2,37 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { UserRepository } from '../features/user/repositories/user.repository';
 
 @Injectable()
 export class AuthGraphqlGuard implements CanActivate {
-    constructor(private jwtService: JwtService) {}
+    constructor(
+        private jwtService: JwtService,
+        readonly userRepository: UserRepository,
+    ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const ctx = GqlExecutionContext.create(context);
         const request = ctx.getContext().req;
         const token = this.extractTokenFromHeader(request);
-        if (!token) {
-            throw new UnauthorizedException();
-        }
+
+        let data;
         try {
-            request['user'] = await this.jwtService.verifyAsync(token);
-            if (request['user'].type !== 'Access') {
-                throw new UnauthorizedException();
-            }
-            request['token'] = token;
-        } catch (e) {
+            data = await this.jwtService.verifyAsync(token);
+        } catch {
+            throw new UnauthorizedException('jwt-expired');
+        }
+
+        request['data'] = data;
+        if (request['data'].type !== 'Access') {
             throw new UnauthorizedException();
         }
-        return true;
+
+        if (!data.userId) {
+            return false;
+        }
+        const user = await this.userRepository.getUserById(data.userId);
+        return !!user;
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {

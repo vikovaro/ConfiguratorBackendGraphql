@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, Role } from '@prisma/client';
-import { IUserResponse } from '../domain/entities/user.entity';
 import { ISession } from '../domain/entities/session.entity';
-import { UpdateUserRequest } from '../domain/dto/update-user.input';
-import { SignUpRequest } from '../domain/dto/sign-up.input';
-
+import { SignUpInput } from '../domain/dto/sign-up.input';
+import { IUser } from '../domain/entities/user.entity';
+import { UpdateUserInput } from '../domain/dto/update-user.input';
 @Injectable()
 export class UserRepository {
     constructor(private readonly prisma: PrismaClient) {}
@@ -19,14 +18,14 @@ export class UserRepository {
         createdAt: true,
     };
 
-    async getUserById(id: string): Promise<IUserResponse> {
+    async getUserById(id: string): Promise<IUser> {
         return this.prisma.user.findUnique({
             where: { id: id },
             select: this.BASE_USER_SELECT,
         });
     }
 
-    async getUserByUsername(username: string): Promise<IUserResponse> {
+    async getUserByUsername(username: string): Promise<IUser> {
         return this.prisma.user.findUnique({
             where: { username: username },
             select: this.BASE_USER_SELECT,
@@ -39,13 +38,13 @@ export class UserRepository {
         });
     }
 
-    async createUser(signUpDto: SignUpRequest, password: string): Promise<IUserResponse> {
+    async createUser(signUpInput: SignUpInput, password: string): Promise<IUser> {
         return this.prisma.user.create({
             data: {
-                username: signUpDto.username,
-                name: signUpDto.name,
-                email: signUpDto.email,
-                phone: signUpDto.phone,
+                username: signUpInput.username,
+                name: signUpInput.name,
+                email: signUpInput.email,
+                phone: signUpInput.phone,
                 password: password,
                 role: Role.User,
             },
@@ -85,15 +84,15 @@ export class UserRepository {
         });
     }
 
-    async updateUser(updateData: UpdateUserRequest, userId: string): Promise<IUserResponse> {
+    async updateUser(updateUserInput: UpdateUserInput, userId: string): Promise<IUser> {
         return this.prisma.user.update({
             where: { id: userId },
             data: {
-                username: updateData.username ? updateData.username : undefined,
-                name: updateData.name ? updateData.name : undefined,
-                phone: updateData.phone ? updateData.phone : undefined,
-                email: updateData.email ? updateData.email : undefined,
-                password: updateData.password ? updateData.password : undefined,
+                username: updateUserInput.username ? updateUserInput.username : undefined,
+                name: updateUserInput.name ? updateUserInput.name : undefined,
+                phone: updateUserInput.phone ? updateUserInput.phone : undefined,
+                email: updateUserInput.email ? updateUserInput.email : undefined,
+                password: updateUserInput.password ? updateUserInput.password : undefined,
             },
             select: this.BASE_USER_SELECT,
         });

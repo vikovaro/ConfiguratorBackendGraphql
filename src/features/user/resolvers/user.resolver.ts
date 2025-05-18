@@ -1,16 +1,16 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AuthGraphqlGuard } from 'src/guards/auth-grapql.guard';
-import { User } from './domain/entities/user.entity';
+import { User } from '../domain/entities/user.entity';
 import { GraphqlReq } from 'src/decorators/graphql-req.decorator';
-import { SignUpInput } from './domain/dto/sign-up.input';
-import { Tokens } from './domain/entities/tokens.entity';
-import { SignInInput } from './domain/dto/sign-in.input';
-import { UpdateUserInput } from './domain/dto/update-user.input';
-import { UserService } from './services/user.service';
+import { SignUpInput } from '../domain/dto/sign-up.input';
+import { Tokens } from '../domain/entities/tokens.entity';
+import { SignInInput } from '../domain/dto/sign-in.input';
+import { UpdateUserInput } from '../domain/dto/update-user.input';
+import { UserService } from '../services/user.service';
+import { AuthRefreshGraphqlGuard } from 'src/guards/auth-refresh-graphql.guard';
 
 @Resolver()
-@UseGuards(AuthGraphqlGuard)
 export class UserResolver {
     constructor(private readonly userService: UserService) {}
 
@@ -33,7 +33,7 @@ export class UserResolver {
     }
 
     @Mutation(() => Tokens, { name: 'refresh' })
-    @UseGuards(AuthGraphqlGuard)
+    @UseGuards(AuthRefreshGraphqlGuard)
     async refresh(@GraphqlReq() req: Request) {
         return await this.userService.refreshToken(req['data'].token);
     }

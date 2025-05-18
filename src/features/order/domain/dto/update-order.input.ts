@@ -1,6 +1,5 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { EStatus } from '../domain/entities/status.enum';
-import { TStatus } from '../enums/status.enum';
+import { EStatus, TStatus } from '../enums/status.enum';
 
 @InputType()
 export class UpdateOrderInput implements IUpdateOrderInput {

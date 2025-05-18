@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfiguratorRepository } from '../repositories/configurator.repository';
 import { ConfiguratorException } from '../../../errors/configurator-exception';
-import { ConfigurationEntity, ConfigurationsEntity } from '../domain/entities/configuration.entity';
+import { Configuration } from '../domain/entities/configuration.entity';
 import { CreateConfigurationInput } from '../domain/dto/create-configuration.input';
+import { Configurations } from '../domain/entities/configurations.entity';
 
 @Injectable()
 export class ConfiguratorService {
@@ -10,7 +11,7 @@ export class ConfiguratorService {
 
     async createConfiguration(
         createConfigurationDto: CreateConfigurationInput,
-    ): Promise<ConfigurationEntity> {
+    ): Promise<Configuration> {
         const userPrice = createConfigurationDto.price;
 
         const cpus = await this.configurationRepository.getAllCpus();
@@ -49,7 +50,7 @@ export class ConfiguratorService {
         const motherboardBudget = userPrice * 0.1; // 10% на материнскую плату
         const psuBudget = userPrice * 0.1; // 10% на блок питания
 
-        let bestConfiguration: ConfigurationEntity | null = null;
+        let bestConfiguration: Configuration | null = null;
         let bestPriceDifference = Infinity;
 
         // Сортируем компоненты по цене (от дорогих к дешевым)
@@ -126,7 +127,7 @@ export class ConfiguratorService {
     }
 
     async getConfigurationById(id: number) {
-        let configuration: ConfigurationEntity;
+        let configuration: Configuration;
         configuration = await this.configurationRepository.getConfigurationFromCache(id);
         if (!configuration) {
             configuration = await this.configurationRepository.getConfigurationFromDb(id);
@@ -139,13 +140,13 @@ export class ConfiguratorService {
         return configuration;
     }
 
-    async getAllConfigurations(limit: number, offset: number): Promise<ConfigurationsEntity> {
+    async getAllConfigurations(limit: number, offset: number): Promise<Configurations> {
         return await this.configurationRepository.getAllConfiguration(limit, offset);
     }
 
     async createConfigurationOld1(
         createConfigurationDto: CreateConfigurationInput,
-    ): Promise<ConfigurationEntity> {
+    ): Promise<Configuration> {
         const userPrice = createConfigurationDto.price;
         const maxPrice = userPrice + 3000;
 
@@ -179,7 +180,7 @@ export class ConfiguratorService {
             );
         }
 
-        let bestConfiguration: ConfigurationEntity | null = null;
+        let bestConfiguration: Configuration | null = null;
         let bestPriceDifference = Infinity;
 
         // Сортируем компоненты по цене (от дорогих к дешевым)

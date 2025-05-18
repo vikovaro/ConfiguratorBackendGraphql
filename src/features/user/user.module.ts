@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './services/user.service';
-import { UserController } from './controllers/user.controller';
 import { UserRepository } from './repositories/user.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TokenService } from './services/token.service';
 import { MetricsService } from '../../metrics/metrics.service';
+import { UserResolver } from './resolvers/user.resolver';
 
 @Module({
     imports: [
@@ -21,7 +21,6 @@ import { MetricsService } from '../../metrics/metrics.service';
             }),
         }),
     ],
-    controllers: [UserController],
-    providers: [UserService, TokenService, UserRepository, MetricsService],
+    providers: [UserService, TokenService, UserRepository, MetricsService, UserResolver],
 })
 export class UserModule {}

@@ -1,16 +1,22 @@
 import { Module } from '@nestjs/common';
 import { OrderService } from './services/order.service';
-import { OrderController } from './controllers/order.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TokenService } from '../user/services/token.service';
 import { UserRepository } from '../user/repositories/user.repository';
 import { OrderRepository } from './repositories/order.repository';
 import { MetricsService } from '../../metrics/metrics.service';
+import { OrderResolver } from './resolvers/order.resolver';
 
 @Module({
-    controllers: [OrderController],
-    providers: [OrderService, TokenService, UserRepository, OrderRepository, MetricsService],
+    providers: [
+        OrderService,
+        TokenService,
+        UserRepository,
+        OrderRepository,
+        MetricsService,
+        OrderResolver,
+    ],
     imports: [
         JwtModule.registerAsync({
             imports: [ConfigModule],

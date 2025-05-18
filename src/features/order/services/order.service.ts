@@ -1,11 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CreateOrderRequest } from '../domain/dto/create.order.request';
 import { OrderRepository } from '../repositories/order.repository';
-import { IOrderResponse } from '../domain/dto/order.response';
-import { UpdateOrderRequest } from '../domain/dto/update-order.input';
 import { UserRepository } from '../../user/repositories/user.repository';
 import { ERole } from '../../user/domain/enums/role.enum';
 import { MetricsService } from '../../../metrics/metrics.service';
+import { CreateOrderInput } from '../domain/dto/create-order.input';
+import { IOrder } from '../domain/entities/order.entity';
+import { UpdateOrderInput } from '../domain/dto/update-order.input';
 
 @Injectable()
 export class OrderService {
@@ -26,15 +26,12 @@ export class OrderService {
         return order;
     }
 
-    async createOrder(
-        createOrderRequest: CreateOrderRequest,
-        userId: string,
-    ): Promise<IOrderResponse> {
+    async createOrder(createOrderInput: CreateOrderInput, userId: string): Promise<IOrder> {
         await this.metricsService.incOrdersCount();
-        return await this.orderRepository.createOrder(createOrderRequest, userId);
+        return await this.orderRepository.createOrder(createOrderInput, userId);
     }
 
-    async updateOrder(updateOrderRequest: UpdateOrderRequest): Promise<IOrderResponse> {
-        return await this.orderRepository.updateOrder(updateOrderRequest);
+    async updateOrder(updateOrderInput: UpdateOrderInput): Promise<IOrder> {
+        return await this.orderRepository.updateOrder(updateOrderInput);
     }
 }

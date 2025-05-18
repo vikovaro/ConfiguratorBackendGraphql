@@ -1,25 +1,20 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { UserRepository } from '../features/user/repositories/user.repository';
 
 @Injectable()
-export class AuthRestGuard implements CanActivate {
+export class AuthRefreshGraphqlGuard implements CanActivate {
     constructor(
-        readonly userRepository: UserRepository,
         private jwtService: JwtService,
+        readonly userRepository: UserRepository,
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        let token = this.extractTokenFromHeader(request);
-
-        if (!token) {
-            token = request.cookies?.accessToken;
-            if (!token) {
-                throw new UnauthorizedException();
-            }
-        }
+        const ctx = GqlExecutionContext.create(context);
+        const request = ctx.getContext().req;
+        const token = this.extractTokenFromHeader(request);
 
         let data;
         try {
@@ -28,16 +23,25 @@ export class AuthRestGuard implements CanActivate {
             throw new UnauthorizedException('jwt-expired');
         }
 
-        request['data'] = data;
+        request['data'] = {
+            ...data,
+            token,
+        };
+
+        if (request['data'].type !== 'Refresh') {
+            throw new UnauthorizedException();
+        }
+
         if (!data.userId) {
             return false;
         }
+
         const user = await this.userRepository.getUserById(data.userId);
         return !!user;
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {
         const [type, token] = request.headers.authorization?.split(' ') ?? [];
-        return type === 'Bearer' ? token : null;
+        return type === 'Bearer' ? token : undefined;
     }
 }

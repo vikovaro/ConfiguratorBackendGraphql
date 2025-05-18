@@ -7,13 +7,13 @@ import {
 } from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository';
 import { TokenService } from './token.service';
-import { TokensResponse } from '../domain/entities/tokens.entity';
-import { IUserResponse } from '../domain/entities/user.entity';
-import { SignUpRequest } from '../domain/dto/sign-up.input';
 import { Role } from '@prisma/client';
-import { UpdateUserRequest } from '../domain/dto/update-user.input';
 import * as bcrypt from 'bcryptjs';
 import { MetricsService } from '../../../metrics/metrics.service';
+import { IUser } from '../domain/entities/user.entity';
+import { SignUpInput } from '../domain/dto/sign-up.input';
+import { ITokens } from '../domain/entities/tokens.entity';
+import { UpdateUserInput } from '../domain/dto/update-user.input';
 
 @Injectable()
 export class UserService {
@@ -25,7 +25,7 @@ export class UserService {
         private readonly metricsService: MetricsService,
     ) {}
 
-    async getUserById(id: string): Promise<IUserResponse> {
+    async getUserById(id: string): Promise<IUser> {
         const user = await this.userRepository.getUserById(id);
 
         if (!user) {
@@ -35,15 +35,15 @@ export class UserService {
         return user;
     }
 
-    async signUp(signUpDto: SignUpRequest): Promise<TokensResponse> {
-        const existingUser = await this.userRepository.getUserByUsername(signUpDto.username);
+    async signUp(signUpInput: SignUpInput): Promise<ITokens> {
+        const existingUser = await this.userRepository.getUserByUsername(signUpInput.username);
         if (existingUser) {
             throw new UnauthorizedException('username-already-taken');
         }
 
-        const hashedPassword = await bcrypt.hash(signUpDto.password, this.SALT_ROUNDS);
+        const hashedPassword = await bcrypt.hash(signUpInput.password, this.SALT_ROUNDS);
 
-        const user = await this.userRepository.createUser(signUpDto, hashedPassword);
+        const user = await this.userRepository.createUser(signUpInput, hashedPassword);
 
         const tokens = await this.tokenService.generateToken(user.id, Role.User);
 
@@ -57,7 +57,7 @@ export class UserService {
         };
     }
 
-    async signIn(username: string, password: string): Promise<TokensResponse> {
+    async signIn(username: string, password: string): Promise<ITokens> {
         const user = await this.userRepository.getUserByUsername(username);
 
         if (!user) {
@@ -81,7 +81,7 @@ export class UserService {
         };
     }
 
-    async refreshToken(refreshToken: string): Promise<TokensResponse> {
+    async refreshToken(refreshToken: string): Promise<ITokens> {
         const session = await this.userRepository.getSessionByRefreshToken(refreshToken);
         if (!session) {
             throw new UnauthorizedException();
@@ -99,35 +99,38 @@ export class UserService {
         };
     }
 
-    async updateUser(updateRequest: UpdateUserRequest, userId: string): Promise<IUserResponse> {
-        const existingUser = await this.userRepository.getUserById(updateRequest.userId);
+    async updateUser(updateUserInput: UpdateUserInput, userId: string): Promise<IUser> {
+        const existingUser = await this.userRepository.getUserById(updateUserInput.userId);
         if (!existingUser) {
             throw new NotFoundException('user-not-found');
         }
 
         const requestOwner = await this.userRepository.getUserById(userId);
 
-        if (updateRequest.userId !== userId && requestOwner.role !== Role.Admin) {
+        if (updateUserInput.userId !== userId && requestOwner.role !== Role.Admin) {
             throw new ForbiddenException('no-rights');
         }
 
-        if (updateRequest.role && requestOwner.role !== Role.Admin) {
+        if (updateUserInput.role && requestOwner.role !== Role.Admin) {
             throw new ForbiddenException('no-rights-for-updating-user-role');
         }
 
-        if (updateRequest.password) {
-            updateRequest.password = await bcrypt.hash(updateRequest.password, this.SALT_ROUNDS);
+        if (updateUserInput.password) {
+            updateUserInput.password = await bcrypt.hash(
+                updateUserInput.password,
+                this.SALT_ROUNDS,
+            );
         }
 
-        if (updateRequest.username && updateRequest.username !== existingUser.username) {
+        if (updateUserInput.username && updateUserInput.username !== existingUser.username) {
             const userWithSameUsername = await this.userRepository.getUserByUsername(
-                updateRequest.username,
+                updateUserInput.username,
             );
             if (userWithSameUsername) {
                 throw new BadRequestException('username-already-taken');
             }
         }
 
-        return await this.userRepository.updateUser(updateRequest, userId);
+        return await this.userRepository.updateUser(updateUserInput, userId);
     }
 }

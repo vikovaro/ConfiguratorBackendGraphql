@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ITokensResponse } from '../domain/entities/tokens.entity';
+import { ITokens } from '../domain/entities/tokens.entity';
 
 @Injectable()
 export class TokenService {
     constructor(readonly jwtService: JwtService) {}
 
-    async generateToken(userId: string, role: string): Promise<ITokensResponse> {
+    async generateToken(userId: string, role: string): Promise<ITokens> {
         const [accessToken, refreshToken] = await Promise.all([
             this.jwtService.signAsync(
                 {

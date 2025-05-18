@@ -7,8 +7,7 @@ import { ExceptionsFilter } from './exception-filters/exception-filter';
 import { PrismaExceptionFilter } from './exception-filters/prisma.exception.filter';
 import { PrismaModule } from './prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthRestGuard } from './guards/auth-rest.guard';
-import { AuthRefreshRestGuard } from './guards/auth-refresh.guad';
+import { AuthRefreshGraphqlGuard } from './guards/auth-refresh-graphql.guard';
 import { ConfiguratorModule } from './features/configurator/configurator.module';
 import { UserModule } from './features/user/user.module';
 import { UserRepository } from './features/user/repositories/user.repository';
@@ -17,6 +16,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { MetricsModule } from './metrics/metrics.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { AuthGraphqlGuard } from './guards/auth-grapql.guard';
 
 @Global()
 @Module({
@@ -49,8 +49,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
     ],
     providers: [
         UserRepository,
-        AuthRestGuard,
-        AuthRefreshRestGuard,
+        AuthRefreshGraphqlGuard,
+        AuthGraphqlGuard,
         ConfigService,
         PrismaClient,
         {

@@ -2,9 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PrismaClient, Status } from '@prisma/client';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
-import { CreateOrderRequest } from '../domain/dto/create.order.request';
-import { IOrderResponse } from '../domain/dto/order.response';
-import { UpdateOrderRequest } from '../domain/dto/update-order.input';
+import { CreateOrderInput } from '../domain/dto/create-order.input';
+import { IOrder } from '../domain/entities/order.entity';
+import { UpdateOrderInput } from '../domain/dto/update-order.input';
 
 @Injectable()
 export class OrderRepository {
@@ -36,7 +36,7 @@ export class OrderRepository {
         },
     };
 
-    async getOrder(id: number): Promise<IOrderResponse> {
+    async getOrder(id: number): Promise<IOrder> {
         return this.prisma.order.findUnique({
             where: {
                 id: id,
@@ -47,16 +47,13 @@ export class OrderRepository {
         });
     }
 
-    async createOrder(
-        createOrderRequest: CreateOrderRequest,
-        userId: string,
-    ): Promise<IOrderResponse> {
+    async createOrder(createOrderInput: CreateOrderInput, userId: string): Promise<IOrder> {
         return this.prisma.order.create({
             data: {
                 userId: userId,
-                configurationId: createOrderRequest.configurationId,
+                configurationId: createOrderInput.configurationId,
                 status: Status.Pending,
-                address: createOrderRequest.address,
+                address: createOrderInput.address,
             },
             include: {
                 ...this.BASE_ORDER_INCLUDE,
@@ -64,17 +61,17 @@ export class OrderRepository {
         });
     }
 
-    async updateOrder(updateOrderRequest: UpdateOrderRequest): Promise<IOrderResponse> {
+    async updateOrder(updateOrderInput: UpdateOrderInput): Promise<IOrder> {
         return this.prisma.order.update({
             where: {
-                id: updateOrderRequest.orderId,
+                id: updateOrderInput.orderId,
             },
             data: {
-                status: updateOrderRequest.status ? updateOrderRequest.status : undefined,
-                address: updateOrderRequest.address ? updateOrderRequest.address : undefined,
-                userId: updateOrderRequest.userId ? updateOrderRequest.userId : undefined,
-                deliveryDate: updateOrderRequest.deliveryDate
-                    ? updateOrderRequest.deliveryDate
+                status: updateOrderInput.status ? updateOrderInput.status : undefined,
+                address: updateOrderInput.address ? updateOrderInput.address : undefined,
+                userId: updateOrderInput.userId ? updateOrderInput.userId : undefined,
+                deliveryDate: updateOrderInput.deliveryDate
+                    ? updateOrderInput.deliveryDate
                     : undefined,
             },
             include: {

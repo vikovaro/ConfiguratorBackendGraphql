@@ -7,7 +7,7 @@ export class UpdateUserInput implements IUpdateUserInput {
     userId: string;
 
     @Field(() => String, { nullable: true })
-    login?: string;
+    username?: string;
 
     @Field(() => String, { nullable: true })
     name?: string;
@@ -27,7 +27,7 @@ export class UpdateUserInput implements IUpdateUserInput {
 
 export interface IUpdateUserInput {
     userId: string;
-    login?: string;
+    username?: string;
     name?: string;
     phone?: string;
     email?: string;
