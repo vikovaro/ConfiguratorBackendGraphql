@@ -1,10 +1,15 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { ConfigurationEntity } from './configuration.entity';
+import { Configuration, IConfiguration } from './configuration.entity';
 
 @ObjectType()
-export class ConfigurationsEntity {
+export class Configurations implements IConfigurations {
     @Field(() => Int)
     count: number;
-    @Field(() => [ConfigurationEntity])
-    configurations: ConfigurationEntity[];
+    @Field(() => [Configuration])
+    configurations: Configuration[];
+}
+
+export interface IConfigurations {
+    count: number;
+    configurations: IConfiguration[];
 }

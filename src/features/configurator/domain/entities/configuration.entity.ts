@@ -1,30 +1,40 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { CpuEntity } from './cpu.entity';
-import { GpuEntity } from './gpu.entity';
-import { MotherBoardEntity } from './motherboard.entity';
-import { PsuEntity } from './psu.entity';
-import { RamEntity } from './ram.entity';
+import { Cpu, ICpu } from './cpu.entity';
+import { Gpu, IGpu } from './gpu.entity';
+import { IMotherBoard, MotherBoard } from './motherboard.entity';
+import { IPsu, Psu } from './psu.entity';
+import { IRam, Ram } from './ram.entity';
 
 @ObjectType()
-export class ConfigurationEntity {
+export class Configuration implements IConfiguration {
     @Field(() => Int)
     id: number;
 
-    @Field(() => CpuEntity)
-    cpu: CpuEntity;
+    @Field(() => Cpu)
+    cpu: Cpu;
 
-    @Field(() => GpuEntity)
-    gpu: GpuEntity;
+    @Field(() => Gpu)
+    gpu: Gpu;
 
-    @Field(() => MotherBoardEntity)
-    motherboard: MotherBoardEntity;
+    @Field(() => MotherBoard)
+    motherboard: MotherBoard;
 
-    @Field(() => PsuEntity)
-    psu: PsuEntity;
+    @Field(() => Psu)
+    psu: Psu;
 
-    @Field(() => RamEntity)
-    ram: RamEntity;
+    @Field(() => Ram)
+    ram: Ram;
 
     @Field(() => Int)
+    price: number;
+}
+
+export interface IConfiguration {
+    id: number;
+    cpu: ICpu;
+    gpu: IGpu;
+    motherboard: IMotherBoard;
+    psu: IPsu;
+    ram: IRam;
     price: number;
 }

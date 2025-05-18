@@ -1,7 +1,7 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class GpuEntity {
+export class Gpu implements IGpu {
     @Field(() => Int)
     id: number;
 
@@ -18,5 +18,14 @@ export class GpuEntity {
     frequency: number;
 
     @Field(() => String)
+    port: string;
+}
+
+export interface IGpu {
+    id: number;
+    manufacturer: string;
+    price: number;
+    wattage: number;
+    frequency: number;
     port: string;
 }

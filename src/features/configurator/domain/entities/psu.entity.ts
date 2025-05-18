@@ -1,7 +1,7 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class PsuEntity {
+export class Psu implements IPsu {
     @Field(() => Int)
     id: number;
 
@@ -15,5 +15,13 @@ export class PsuEntity {
     wattage: number;
 
     @Field(() => Int)
+    price: number;
+}
+
+export interface IPsu {
+    id: number;
+    name: string;
+    manufacturer: string;
+    wattage: number;
     price: number;
 }

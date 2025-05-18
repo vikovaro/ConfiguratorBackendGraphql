@@ -1,7 +1,7 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class RamEntity {
+export class Ram implements IRam {
     @Field(() => Int)
     id: number;
 
@@ -15,5 +15,13 @@ export class RamEntity {
     price: number;
 
     @Field(() => Int)
+    capacity: number;
+}
+
+export interface IRam {
+    id: number;
+    name: string;
+    manufacturer: string;
+    price: number;
     capacity: number;
 }

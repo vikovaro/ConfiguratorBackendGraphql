@@ -1,7 +1,7 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class MotherBoardEntity {
+export class MotherBoard implements IMotherBoard {
     @Field(() => Int)
     id: number;
 
@@ -24,5 +24,16 @@ export class MotherBoardEntity {
     cpuManufacturer: string;
 
     @Field(() => String)
+    port: string;
+}
+
+export interface IMotherBoard {
+    id: number;
+    name: string;
+    manufacturer: string;
+    price: number;
+    socket: string;
+    chipset: string;
+    cpuManufacturer: string;
     port: string;
 }
