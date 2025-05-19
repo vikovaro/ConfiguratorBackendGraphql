@@ -28,7 +28,6 @@ Backend-приложение на GraphQL для автоматической к
 - **Prisma ORM**
 - **Redis**
 - **JWT**
-- **swagger**
 - **prettier/eslint**
 - **prometheus/grafana**
 
